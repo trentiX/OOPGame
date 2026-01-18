@@ -6,4 +6,21 @@ public class Player {
     private int hp;
     private int gold;
     private int weaponId;
+
+    public Player(int id, String name, int hp, int gold, int weaponId) {
+        this.id = id;
+        this.name = name;
+        this.hp = hp;
+        this.gold = gold;
+        this.weaponId = weaponId;
+    }
+
+    public int getWeaponId() {return weaponId; }
+    public void setWeaponId(int weaponId) { this.weaponId = weaponId; }
+    public int getId() { return id; }
+    public String getName() { return name; }
+    public int getHp() { return hp; }
+    public void setHp(int hp) { this.hp = hp; }
+    public int getGold() { return gold; }
+    public void setGold(int gold) { this.gold = gold; }
 }

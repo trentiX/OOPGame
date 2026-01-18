@@ -7,6 +7,11 @@ public class PotionRepository {
     public PotionRepository(Connection conn) { this.connection = conn; }
 
     public void healPlayer(int playerId, int amount) throws SQLException {
-
+        String sql = "UPDATE players SET hp = hp + ? WHERE id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, amount);
+            ps.setInt(2, playerId);
+            ps.executeUpdate();
+        }
     }
 }

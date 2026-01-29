@@ -1,5 +1,7 @@
 package com.game.controller;
 
+import com.game.factory.EnemyFactory;
+import com.game.interfaces.IPlayerRepository;
 import com.game.model.*;
 import com.game.repository.*;
 import com.game.service.GameService;
@@ -9,14 +11,14 @@ import java.sql.Connection;
 import java.util.Scanner;
 
 public class GameController {
-
     private final Scanner scanner = new Scanner(System.in);
-    private final GameService gameService = new GameService();
+    private final GameService gameService = GameService.getInstance();
     private Weapon currentWeapon;
+    private User currentUser = new User("Player1", Role.PLAYER); // Реализуйте Конструктор пж
 
     public void start() {
         try (Connection conn = DBConnection.getConnection()) {
-            PlayerRepository playerRepo = new PlayerRepository(conn);
+            IPlayerRepository playerRepo = new PlayerRepository(conn);
             EnemyRepository enemyRepo = new EnemyRepository(conn);
             WeaponRepository weaponRepo = new WeaponRepository(conn);
             InventoryRepository invRepo = new InventoryRepository(conn);
@@ -54,11 +56,24 @@ public class GameController {
                 switch (choice) {
                     case 1 -> explore(player, enemyRepo, playerRepo, invRepo, weaponRepo);
                     case 2 -> drinkPotion(player, playerRepo, invRepo);
+                    case 3 -> {
+                        if (currentUser.getRole() == Role.ADMIN) {
+                            PlayerFull pf = playerRepo.getFullPlayer(player.getId());
+                            System.out.println("Полные данные (JOIN): " + pf.getPlayer().getName() + " владеет " + pf.getWeapon().getName());
+                        } else {
+                            System.out.println("Ошибка: Только ADMIN может смотреть полные данные.");
+                        }
+                    }
                     case 0 -> {
                         System.out.println("Вы покинули подземелье. Прогресс сохранен.");
                         running = false;
                     }
-                    default -> System.out.println("Неверный выбор.");
+                    default ->  {
+                        System.out.println("-------------------------------------------------");
+                    System.out.println("[ОШИБКА]: Вы ввели '" + choice + "'. Допустимы только числа 0, 1, 2, 3.");
+                    System.out.println("Пожалуйста, выберите действие из списка.");
+                    System.out.println("-------------------------------------------------");
+                    }
                 }
             }
         } catch (Exception e) {
@@ -74,6 +89,7 @@ public class GameController {
         System.out.println("[ Оружие: " + w.getName() + " (Урон +" + w.getAdditionalDamage() + ") ]");
         System.out.println("1. Идти вглубь подземелья");
         System.out.println("2. Выпить зелье лечения");
+        System.out.println("3. Посмотреть полные характеристики персонажа");
         System.out.println("0. Выход");
     }
 
@@ -87,7 +103,7 @@ public class GameController {
     }
 
     private void handleBattle(Player p, EnemyRepository er, PlayerRepository pr) throws Exception {
-        Enemy e = er.getRandomEnemy();
+        Enemy e = EnemyFactory.createRandom(er);
         System.out.println("\nНа вас напал " + e.getName() + "!");
 
         while (e.getHp() > 0 && p.getHp() > 0) {
@@ -125,6 +141,9 @@ public class GameController {
             System.out.println("Внутри лежит: " + foundWeapon.getName());
             System.out.println("Тип: " + foundWeapon.getType() + " | Бонус урона: +" + foundWeapon.getAdditionalDamage());
             System.out.println("Ваше текущее оружие: " + currentWeapon.getName());
+
+            // Сделайте сравнение для оружий здесь и принтите данные
+
             System.out.print("Заменить текущее оружие? (1-Да, 2-Нет): ");
 
             if (getChoice() == 1) {

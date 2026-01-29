@@ -8,6 +8,14 @@ import java.util.Random;
 public class GameService {
     private Random random = new Random();
 
+    private static GameService instance = new GameService();
+
+    private GameService(){}
+
+    public static GameService getInstance() {
+        return instance;
+    }
+
     public int calculateDamage(Weapon weapon, Enemy enemy) {
         int damage = 10 + (weapon != null ? weapon.getAdditionalDamage() : 0);
         if (enemy.getType().equals("SKELETON") && weapon.getType().equals("BLUNT")) return (int)(damage * 1.5);

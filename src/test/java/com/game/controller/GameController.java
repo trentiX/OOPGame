@@ -142,7 +142,15 @@ public class GameController {
             System.out.println("Тип: " + foundWeapon.getType() + " | Бонус урона: +" + foundWeapon.getAdditionalDamage());
             System.out.println("Ваше текущее оружие: " + currentWeapon.getName());
 
-            // Сделайте сравнение для оружий здесь и принтите данные
+            boolean betterWeapon = java.util.stream.Stream
+                    .of(currentWeapon, foundWeapon)
+                    .filter(w -> w != null)
+                    .max(java.util.Comparator.comparingInt(Weapon::getAdditionalDamage))
+                    .orElse(currentWeapon) == foundWeapon;
+
+            if (betterWeapon) {
+                System.out.println("Это оружие сильнее вашего текущего!");
+            }
 
             System.out.print("Заменить текущее оружие? (1-Да, 2-Нет): ");
 

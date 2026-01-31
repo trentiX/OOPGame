@@ -1,5 +1,20 @@
 package com.game.model;
 
 public class User {
-    // Смотрите в гейм контроллер
+
+    private String username;
+    private Role role;
+
+    public User(String username, Role role) {
+        this.username = username;
+        this.role = role;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public String getUsername() {
+        return username;
+    }
 }

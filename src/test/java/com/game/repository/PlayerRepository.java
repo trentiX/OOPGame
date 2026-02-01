@@ -101,7 +101,7 @@ public class PlayerRepository implements IPlayerRepository
                         rs.getInt("additional_damage")
                 );
 
-                return new PlayerFull(p, w); // Сабина, Наргиз P это Player и W это Weapon
+                return new PlayerFull(p, w);
             }
         }
         return null;

@@ -9,6 +9,11 @@ public class PlayerFull {
         this.weapon = weapon;
     }
 
-    public Player getPlayer() { return player; }
-    public Weapon getWeapon() { return weapon; }
+    public Player getPlayer() {
+        return player;
+    }
+
+    public Weapon getWeapon() {
+        return weapon;
+    }
 }

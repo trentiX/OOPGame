@@ -6,5 +6,6 @@ import com.game.repository.EnemyRepository;
 public class EnemyFactory {
 
     public static Enemy createRandom(EnemyRepository repo) throws Exception {
-        return repo.getRandomEnemy();}
+        return repo.getRandomEnemy();
+}
 }

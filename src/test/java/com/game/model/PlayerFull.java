@@ -14,6 +14,6 @@ public class PlayerFull {
     }
 
     public Weapon getWeapon() {
-        return weapon;
+        return weapon ;
     }
 }

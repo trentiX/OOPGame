@@ -98,7 +98,8 @@ public class PlayerRepository implements IPlayerRepository
                         rs.getInt("wid"),
                         rs.getString("wname"),
                         rs.getString("type"),
-                        rs.getInt("additional_damage")
+                        rs.getInt("additional_damage"),
+                        rs.getInt("price")
                 );
 
                 return new PlayerFull(p, w);

@@ -13,6 +13,7 @@ import java.util.Scanner;
 public class GameController {
     private final Scanner scanner = new Scanner(System.in);
     private final GameService gameService = GameService.getInstance();
+    private EquipmentStore equipmentStore;
     private Weapon currentWeapon;
     private User currentUser = new User("Player1", Role.PLAYER); // Реализуйте Конструктор пж
 
@@ -22,6 +23,7 @@ public class GameController {
             EnemyRepository enemyRepo = new EnemyRepository(conn);
             WeaponRepository weaponRepo = new WeaponRepository(conn);
             InventoryRepository invRepo = new InventoryRepository(conn);
+            this.equipmentStore = new EquipmentStore(weaponRepo, playerRepo);
 
             Player player = playerRepo.getPlayerById(1);
             if (player == null) {
@@ -39,7 +41,7 @@ public class GameController {
             if (currentWeapon == null) {
                 currentWeapon = weaponRepo.getWeaponById(1);
                 if (currentWeapon == null) {
-                    currentWeapon = new Weapon(1, "Ржавый нож", "SLASH", 5);
+                    currentWeapon = new Weapon(1, "Ржавый нож", "SLASH", 5, 50);
                 }
                 player.setWeaponId(currentWeapon.getId());
                 playerRepo.updatePlayer(player);
@@ -54,8 +56,8 @@ public class GameController {
                 int choice = getChoice();
 
                 switch (choice) {
-                    case 1 -> explore(player, enemyRepo, playerRepo, invRepo, weaponRepo);
-                    case 2 -> drinkPotion(player, playerRepo, invRepo);
+                    case 1 -> explore(player, enemyRepo, (PlayerRepository) playerRepo, invRepo, weaponRepo);
+                    case 2 -> drinkPotion(player, (PlayerRepository) playerRepo, invRepo);
                     case 3 -> {
                         if (currentUser.getRole() == Role.ADMIN) {
                             PlayerFull pf = playerRepo.getFullPlayer(player.getId());
@@ -63,7 +65,9 @@ public class GameController {
                         } else {
                             System.out.println("Ошибка: Только ADMIN может смотреть полные данные.");
                         }
+
                     }
+                    case 4 -> equipmentStore.showMenu(player);
                     case 0 -> {
                         System.out.println("Вы покинули подземелье. Прогресс сохранен.");
                         running = false;
@@ -90,6 +94,7 @@ public class GameController {
         System.out.println("1. Идти вглубь подземелья");
         System.out.println("2. Выпить зелье лечения");
         System.out.println("3. Посмотреть полные характеристики персонажа");
+        System.out.println("4. Зайти в магазин оружия");
         System.out.println("0. Выход");
     }
 

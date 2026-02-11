@@ -18,13 +18,19 @@ public class PlayerRepository implements IPlayerRepository
     @Override
     public void updatePlayer(Player player) throws SQLException
     {
-        String query = "UPDATE players SET hp = ?, gold = ?, weapon_id = ? WHERE id = ?";
+        String query = "UPDATE players\n" +
+                "SET hp = ?, gold = ?, weapon_id = ?,\n" +
+                "    enemies_killed = ?, chests_opened = ?, potions_used = ?\n" +
+                "WHERE id = ?\n";
         try (PreparedStatement ps = connection.prepareStatement(query))
         {
             ps.setInt(1, player.getHp());
             ps.setInt(2, player.getGold());
             ps.setInt(3, player.getWeaponId());
-            ps.setInt(4, player.getId());
+            ps.setInt(4, player.getEnemiesKilled());
+            ps.setInt(5, player.getChestsOpened());
+            ps.setInt(6, player.getPotionsUsed());
+            ps.setInt(7, player.getId());
             ps.executeUpdate();
         }
     }
@@ -51,13 +57,20 @@ public class PlayerRepository implements IPlayerRepository
             ResultSet rs = ps.executeQuery();
             if (rs.next())
             {
-                return new Player(
+                Player p = new Player(
                         rs.getInt("id"),
                         rs.getString("name"),
                         rs.getInt("hp"),
                         rs.getInt("gold"),
                         rs.getInt("weapon_id")
                 );
+
+                p.setEnemiesKilled(rs.getInt("enemies_killed"));
+                p.setChestsOpened(rs.getInt("chests_opened"));
+                p.setPotionsUsed(rs.getInt("potions_used"));
+
+                return p;
+
             }
         }
         return null;

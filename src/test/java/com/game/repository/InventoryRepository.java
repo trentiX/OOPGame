@@ -28,7 +28,6 @@ public class InventoryRepository {
 
 
     public void usePotion(int playerId) throws SQLException {
-        public void usePotion ( int playerId) throws SQLException {
             String sql = "UPDATE inventory\n" +
                     "SET quantity = quantity - 1\n" +
                     "WHERE id = (\n" +

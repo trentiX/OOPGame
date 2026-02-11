@@ -6,6 +6,11 @@ public class Player {
     private int hp;
     private int gold;
     private int weaponId;
+    private int enemiesKilled;
+    private int chestsOpened;
+    private int potionsUsed;
+
+
 
     public Player(int id, String name, int hp, int gold, int weaponId) {
         this.id = id;
@@ -23,4 +28,13 @@ public class Player {
     public void setHp(int hp) { this.hp = hp; }
     public int getGold() { return gold; }
     public void setGold(int gold) { this.gold = gold; }
+    public int getEnemiesKilled() { return enemiesKilled; }
+    public void setEnemiesKilled(int enemiesKilled) { this.enemiesKilled = enemiesKilled; }
+
+    public int getChestsOpened() { return chestsOpened; }
+    public void setChestsOpened(int chestsOpened) { this.chestsOpened = chestsOpened; }
+
+    public int getPotionsUsed() { return potionsUsed; }
+    public void setPotionsUsed(int potionsUsed) { this.potionsUsed = potionsUsed; }
+
 }

@@ -18,7 +18,7 @@ public class GameController {
 
     public void start() {
         try (Connection conn = DBConnection.getConnection()) {
-            PlayerRepository playerRepo = new PlayerRepository(conn);
+            IPlayerRepository playerRepo = new PlayerRepository(conn);
             EnemyRepository enemyRepo = new EnemyRepository(conn);
             WeaponRepository weaponRepo = new WeaponRepository(conn);
             InventoryRepository invRepo = new InventoryRepository(conn);
@@ -64,7 +64,6 @@ public class GameController {
                             System.out.println("Ошибка: Только ADMIN может смотреть полные данные.");
                         }
                     }
-                    case 4 -> showStatistics(player);
                     case 0 -> {
                         System.out.println("Вы покинули подземелье. Прогресс сохранен.");
                         running = false;
@@ -91,8 +90,6 @@ public class GameController {
         System.out.println("1. Идти вглубь подземелья");
         System.out.println("2. Выпить зелье лечения");
         System.out.println("3. Посмотреть полные характеристики персонажа");
-        System.out.println("4. Показать статистику");
-
         System.out.println("0. Выход");
     }
 
@@ -124,14 +121,12 @@ public class GameController {
         if (p.getHp() > 0) {
             System.out.println (e.getName() + " повержен! Вы получили " + e.getExpReward() + " золота.");
             p.setGold(p.getGold() + e.getExpReward());
-            p.setEnemiesKilled(p.getEnemiesKilled() + 1);
             pr.updatePlayer(p);
         }
     }
 
     private void handleChest(Player p, InventoryRepository ir, WeaponRepository wr, PlayerRepository pr) throws Exception {
         System.out.println("\nВы нашли старый сундук!");
-        p.setChestsOpened(p.getChestsOpened() + 1);
         String lootType = gameService.getRandomLootType();
 
         if (lootType.equals("POTION")) {
@@ -176,20 +171,12 @@ public class GameController {
         int count = ir.countItem(p.getId(), "POTION");
         if (count > 0) {
             p.setHp(Math.min(100, p.getHp() + 30));
-            p.setPotionsUsed(p.getPotionsUsed() + 1);
             ir.usePotion(p.getId());
             pr.updatePlayer(p);
             System.out.println("HP восстановлено! Текущее HP: " + p.getHp());
         } else {
             System.out.println("У вас нет зелий!");
         }
-    }
-    private void showStatistics(Player p) {
-        System.out.println("\n===== СТАТИСТИКА ИГРОКА =====");
-        System.out.println("Убито врагов: " + p.getEnemiesKilled());
-        System.out.println("Открыто сундуков: " + p.getChestsOpened());
-        System.out.println("Использовано зелий: " + p.getPotionsUsed());
-        System.out.println("==============================");
     }
 
     private int getChoice() {
